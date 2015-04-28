@@ -1,0 +1,7 @@
+{% load staticfiles %}
+{% block brand_title %}
+	<a href="{{ homepage_url }}">
+		<img src="{% static "oscar/img/logo.png" %}">
+	</a>
+	<small> {{ shop_tagline }}</small>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% load reviews_tags %}
+{% load thumbnail %}
+{% load i18n %}
+{% load display_tags %}
+{% load staticfiles %}
+{% load purchase_info_tags %}
+{% purchase_info_for_product request product as session %}
+
+{% block product %}
+    <div class="thumbnail">
+        <h5 class="text-center">
+            {% block product_title %}
+                <a href="{{ product.get_absolute_url }}" title="{{ product.get_title }}">
+                    {{ product.get_title|slice:":22" }}
+                    {% if product.get_title|length > 22 %}
+                        ...
+                    {% endif %}
+                </a>
+            {% endblock %}
+        </h5>
+        {% block product_image %}
+            <div class="image_container">
+                {% with image=product.primary_image %}
+                    {% thumbnail image.original "x155" upscale=False as thumb %}
+                    <a href="{{ product.get_absolute_url }}">
+                        <img src="{{ thumb.url }}" alt="{{ product.get_title }}" class="img-responsive">
+                    </a>
+                    {% endthumbnail %}
+                {% endwith %}
+            </div>
+        {% endblock %}
+
+        <div class="caption">
+            <div class="row">
+                <div class="col-md-12 price">
+                    {% block product_price %}
+                        <div class="product_price">
+                            {% include "catalogue/partials/price.html" %}
+                        </div>
+                    {% endblock %}
+                </div>
+                <div class="col-md-12">
+                    {% block product_review %}
+                        {% iffeature "reviews" %}
+                            <p class="star-rating {{ product.rating|as_stars }}">
+                                <i class="icon-star"></i>
+                                <i class="icon-star"></i>
+                                <i class="icon-star"></i>
+                                <i class="icon-star"></i>
+                                <i class="icon-star"></i>
+                            </p>
+                        {% endiffeature %}
+                    {% endblock %}
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-md-6">
+                    <a class="btn btn-primary btn-product">
+                        <span class="glyphicon glyphicon-thumbs-up"></span> Like
+                    </a> 
+                </div>
+                <div class="col-md-6">
+                    {% if not product.is_parent %}
+                        {% include "catalogue/partials/add_to_basket_form_compact.html" %}
+                    {% else %}
+                        <a class="btn btn-success btn-product" href="{{ product.get_absolute_url }}">
+                            <span class="glyphicon glyphicon-shopping-cart">
+                            </span> Buy
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
